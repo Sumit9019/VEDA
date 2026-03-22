@@ -255,8 +255,10 @@ const buildHtmlTemplate = (result: any, assignment: any, isAnswerKey: boolean) =
 };
 
 export const generatePDF = async (result: any, assignment: any, isAnswerKey = false): Promise<string> => {
+  const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_BIN;
   const browser = await puppeteer.launch({
     headless: true,
+    executablePath: executablePath || undefined,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   const page = await browser.newPage();

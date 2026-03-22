@@ -142,6 +142,27 @@ npm run dev
 
 Frontend runs on `http://localhost:3000` and backend runs on `http://localhost:4000`.
 
+## Deployment
+
+### Backend Deployment Notes
+
+The backend uses Puppeteer for PDF generation, so deploying with a generic auto-detected Node builder can fail while installing Chromium system dependencies. A production-ready Docker setup is included in [backend/Dockerfile](/home/sumit/Veda/backend/Dockerfile).
+
+If you are deploying the backend on Railway:
+
+1. Create a separate backend service from this repository.
+2. Set the service root directory to `backend`.
+3. Let Railway build from the included `Dockerfile`.
+4. Add environment variables:
+   `PORT=4000`
+   `MONGODB_URI=...`
+   `REDIS_URL=...`
+   `NVIDIA_API_KEY=...`
+   `USE_REMOTE_AI=true`
+5. Expose port `4000`.
+
+This avoids the common Puppeteer image-build failure from auto-installing browser dependencies through the default buildpacks path.
+
 ## Key Features
 
 - Assignment creation with validation
