@@ -1,3 +1,4 @@
+console.log("--- DEBUG: ACTUAL REDIS_URL SEEN IN APP:", process.env.REDIS_URL);
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
