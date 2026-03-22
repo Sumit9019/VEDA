@@ -2,7 +2,6 @@ FROM node:20-bookworm-slim
 
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
-ENV NODE_ENV=production
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   chromium \
@@ -51,6 +50,8 @@ COPY tsconfig.json ./
 COPY src ./src
 
 RUN npm run build
+
+ENV NODE_ENV=production
 
 EXPOSE 4000
 
