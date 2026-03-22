@@ -215,41 +215,66 @@ export default function CreateAssignmentPage() {
 
     const recognition = new RecognitionConstructor();
     recognition.continuous = true;
-    recognition.interimResults = false;
+    recognition.interimResults = true;
     recognition.lang = "en-IN";
 
+    let finalTranscript = "";
+
     recognition.onresult = (event) => {
-      let transcript = "";
+      let interimTranscript = "";
 
-      for (let index = event.resultIndex; index < event.results.length; index += 1) {
-        const result = event.results[index];
-        const spokenText = result?.[0]?.transcript ?? "";
-
-        if (spokenText) {
-          transcript += `${spokenText} `;
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
         }
       }
 
-      transcript = transcript.trim();
+      console.log("Speech Event:", { finalTranscript, interimTranscript });
 
-      if (!transcript) {
-        return;
+      if (finalTranscript || interimTranscript) {
+        const currentInstruction = getValues("instructions") ?? "";
+        // We only append to existing instruction if it's the first time we add transcript
+        // But since this is a simple implementation, let's just use finalTranscript + interim
+        // Actually, to avoid overwriting existing user text, we only append.
+        
+        // This simple append might duplicate if we are not careful about finalized segments.
+        // For robustness, replacing the logic to just append the newly finalized segment:
+        
+        // As a safe fallback for the user, let's just append finalized segments.
+      }
+    };
+
+    // To prevent the above complex logic from being buggy, let's write a safer `onresult`
+    recognition.onresult = (event) => {
+      let newFinalText = "";
+      
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          newFinalText += event.results[i][0].transcript + " ";
+        }
       }
 
-      const currentInstruction = getValues("instructions") ?? "";
-      const separator = currentInstruction.trim() ? " " : "";
+      if (newFinalText) {
+        console.log("Speech Finalized Segment:", newFinalText);
+        const currentInstruction = getValues("instructions") ?? "";
+        const separator = currentInstruction.trim() ? " " : "";
 
-      setValue("instructions", `${currentInstruction}${separator}${transcript}`, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+        setValue("instructions", `${currentInstruction}${separator}${newFinalText.trim()}`, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
     };
 
     recognition.onend = () => {
+      console.log("Speech recognition ended.");
       setIsListening(false);
     };
 
-    recognition.onerror = () => {
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event.error || event);
       setIsListening(false);
     };
 
@@ -260,7 +285,7 @@ export default function CreateAssignmentPage() {
       recognition.stop();
       speechRecognitionRef.current = null;
     };
-  }, [getValues, setValue]);
+  }, []); // Remove getValues/setValue from deps to ensure it never re-initializes unexpectedly
 
   const handleMicToggle = () => {
     if (!speechRecognitionRef.current || !isSpeechSupported) {
