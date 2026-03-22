@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libxss1 \
   libxtst6 \
   xdg-utils \
+  poppler-utils \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
