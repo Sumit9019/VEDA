@@ -73,7 +73,7 @@ interface SpeechRecognitionLike {
   stop: () => void;
   onresult: ((event: SpeechRecognitionEventLike) => void) | null;
   onend: (() => void) | null;
-  onerror: (() => void) | null;
+  onerror: ((event: any) => void) | null;
 }
 
 const toIsoDate = (input?: string) => {
