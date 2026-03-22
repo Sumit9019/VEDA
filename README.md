@@ -100,6 +100,7 @@ REDIS_URL=redis://localhost:6379
 PORT=4000
 USE_REMOTE_AI=true
 NVIDIA_GENERATION_MODEL=meta/llama3-70b-instruct
+FRONTEND_URL=http://localhost:3000
 ```
 
 If you want to run without remote AI, set:
@@ -146,7 +147,7 @@ Frontend runs on `http://localhost:3000` and backend runs on `http://localhost:4
 
 ### Backend Deployment Notes
 
-The backend uses Puppeteer for PDF generation, so deploying with a generic auto-detected Node builder can fail while installing Chromium system dependencies. A production-ready Docker setup is included in [backend/Dockerfile](/home/sumit/Veda/backend/Dockerfile).
+The backend uses Puppeteer for PDF generation and `poppler-utils` for text extraction from PDF references. Deploying with a generic auto-detected Node builder can fail while installing these system dependencies. A production-ready Docker setup is included in `backend/Dockerfile` that installs Chromium and `poppler-utils`.
 
 If you are deploying the backend on Railway:
 
@@ -154,11 +155,12 @@ If you are deploying the backend on Railway:
 2. Set the service root directory to `backend`.
 3. Let Railway build from the included `Dockerfile`.
 4. Add environment variables:
-   `PORT=4000`
-   `MONGODB_URI=...`
-   `REDIS_URL=...`
-   `NVIDIA_API_KEY=...`
-   `USE_REMOTE_AI=true`
+   - `PORT=4000`
+   - `MONGODB_URI=...`
+   - `REDIS_URL=...`
+   - `NVIDIA_API_KEY=...`
+   - `USE_REMOTE_AI=true`
+   - `FRONTEND_URL=https://your-frontend-domain.vercel.app` *(Crucial for CORS; do NOT include trailing slashes or subpaths)*
 5. Expose port `4000`.
 
 This avoids the common Puppeteer image-build failure from auto-installing browser dependencies through the default buildpacks path.
