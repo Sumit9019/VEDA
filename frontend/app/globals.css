@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-accent: #FF5A36;
+  --color-sidebar-bg: #FFFFFF;
+  --color-background-main: #F4F7F9;
+  --color-surface: #ffffff;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background-main);
+    color: #1e293b;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  a,
+  button,
+  summary,
+  label[for],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  input:disabled,
+  select:disabled,
+  textarea:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  .font-ui {
+    font-family: var(--font-bricolage), system-ui, sans-serif;
+  }
+}
